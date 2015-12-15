@@ -58,14 +58,15 @@ class LRUCache: public Cache {
         
         if (mp.size()>0){
             map<int,Node*>::iterator itr = mp.begin();
-            while ((itr++) != mp.end()){
+            while ((itr) != mp.end()){
                 if(itr->first == key){
-                    mv_head(mp[key]);
+                    if (mp.size()>1)
+                        mv_head(mp[key]);
                     return mp[key]->value;
                 }
+                itr++;
             }
         }
-            
         return -1;
     }
     void update_end(Node* nd) {
@@ -78,23 +79,33 @@ class LRUCache: public Cache {
     }
     virtual void set(int key, int value) {
         Node* nd = new Node(key,value);
-        
+       
+        if (mp.size() == 0){
+            mp[key] =  nd;
+            head = nd;
+            tail = nd;
+            return;
+        }
+
         map<int,Node*>::iterator itr = mp.begin();
-        while ((itr++) != mp.end()) {
+        while (itr != mp.end()) {
             if (itr->first == key){
-                mv_head(mp[key]);
+                if (mp.size()>1)
+                    mv_head(mp[key]);
                 mp[key] = nd;
+                return;
             }
+            itr++;
         }
         if (mp.size() < cp){
-            mv_head(mp[key]);
+            if (mp.size()>1)
+                mv_head(mp[key]);
             mp[key] = nd;
         }
         else {
             update_end(nd);       
             mp[key] = nd;
         }
-
     }
 
 };
