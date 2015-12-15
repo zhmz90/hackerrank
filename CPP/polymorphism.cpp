@@ -116,7 +116,7 @@ int main() {
     cin>>n>>capacity;
     LRUCache l(capacity);
     for (i=0;i<n;i++) {
-        string command;   
+        string command;
         cin >> command;
         if (command == "get"){
             int key;
@@ -129,7 +129,6 @@ int main() {
             l.set(key,value);
         }
     }
-    
+
     return 0;
 }
-
