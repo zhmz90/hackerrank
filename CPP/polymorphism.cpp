@@ -19,7 +19,6 @@ struct Node{
 
 
 class Cache{
-    
     protected:
     map<int,Node*>mp;
     int cp;
@@ -43,14 +42,22 @@ class LRUCache: public Cache {
         cout<<endl;
     }
     void mv_head(Node* nd){
+        if (nd->prev == NULL)
+            // node is the head
+            return;
+
+        // delete node D -->
         nd->prev->next = nd->next;
-        nd->next->prev = nd->prev;
+
+        if (nd->next != NULL){
+            // D <--
+            nd->next->prev = nd->prev;
+        }
 
         Node* h = head;
         head = nd;
         head->next = h;
-        h->prev = nd;
-        nd->prev = NULL;
+        head->prev = NULL;
     }
 
     virtual int get(int key) {
@@ -60,8 +67,7 @@ class LRUCache: public Cache {
             map<int,Node*>::iterator itr = mp.begin();
             while ((itr) != mp.end()){
                 if(itr->first == key){
-                    if (mp.size()>1)
-                        mv_head(mp[key]);
+                    mv_head(mp[key]);
                     return mp[key]->value;
                 }
                 itr++;
@@ -77,6 +83,7 @@ class LRUCache: public Cache {
         tail->next = nd;
         nd->prev = tail;
     }
+
     virtual void set(int key, int value) {
         Node* nd = new Node(key,value);
        
@@ -90,21 +97,32 @@ class LRUCache: public Cache {
         map<int,Node*>::iterator itr = mp.begin();
         while (itr != mp.end()) {
             if (itr->first == key){
-                if (mp.size()>1)
-                    mv_head(mp[key]);
                 mp[key] = nd;
+                /*
+                if (mp.size()<cp){
+                    // add nd the most recently used key
+                    mv_head(nd);
+                }
+                else {
+                    // add the least recently and delete origin node
+                    tail->prev->next = nd;
+                    nd->prev = tail->prev;
+                    tail = nd;
+                }
+                */
                 return;
             }
             itr++;
         }
+
+        mp[key] = nd;
         if (mp.size() < cp){
-            if (mp.size()>1)
-                mv_head(mp[key]);
-            mp[key] = nd;
+            mv_head(mp[key]);
         }
         else {
-            update_end(nd);       
-            mp[key] = nd;
+            tail->prev->next = nd;
+            nd->prev = tail->prev;
+            tail = nd;
         }
     }
 
