@@ -35,13 +35,17 @@ class LRUCache: public Cache {
             head = NULL;
             tail = NULL;
         }
-    void print_list(Node* head){
-         while (head != NULL) {
-            cout<<(head++)->value<<" ";
+    void print_list(){
+        Node* tmp = head;
+         while (tmp != NULL) {
+            cout<<tmp->value<<" ";
+            tmp = tmp->next;
         }        
         cout<<endl;
     }
     void mv_head(Node* nd){
+        cout<<"before mv_head\n";
+        print_list();
         if (nd->prev == NULL)
             // node is the head
             return;
@@ -53,11 +57,18 @@ class LRUCache: public Cache {
             // D <--
             nd->next->prev = nd->prev;
         }
+        //else if(nd->next == NULL){
+        //    nd->prev->next = NULL;
+        //}
 
         Node* h = head;
+        //head = nd;
+        head->prev = nd;
+        nd->next   = head;
+        nd->prev   = NULL;
         head = nd;
-        head->next = h;
-        head->prev = NULL;
+        cout<<"after mv_head\n";
+        print_list();
     }
 
     virtual int get(int key) {
@@ -65,7 +76,7 @@ class LRUCache: public Cache {
         
         if (mp.size()>0){
             map<int,Node*>::iterator itr = mp.begin();
-            while ((itr) != mp.end()){
+            while (itr != mp.end()){
                 if(itr->first == key){
                     mv_head(mp[key]);
                     return mp[key]->value;
@@ -85,6 +96,8 @@ class LRUCache: public Cache {
     }
 
     virtual void set(int key, int value) {
+        //print_list();
+
         Node* nd = new Node(key,value);
        
         if (mp.size() == 0){
@@ -116,13 +129,20 @@ class LRUCache: public Cache {
         }
 
         mp[key] = nd;
-        if (mp.size() < cp){
-            mv_head(mp[key]);
+        if (mp.size() <= cp){
+            // add new node  to head
+            cout<<"<=cp\n";
+            nd->next = head;
+            head->prev = nd;
+            head = nd;
         }
         else {
+            Node *tmp = tail;
+            //delete tail;
             tail->prev->next = nd;
             nd->prev = tail->prev;
             tail = nd;
+            mp.erase(tmp->key);
         }
     }
 
@@ -146,6 +166,8 @@ int main() {
             cin>>key>>value;
             l.set(key,value);
         }
+        else if (command == "print")
+            l.print_list();
     }
 
     return 0;
