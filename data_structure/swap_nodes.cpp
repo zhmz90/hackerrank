@@ -37,18 +37,14 @@ void swap_depth(node *root,int tree_depth, int target_depth){
 
     if (root->left != NULL)
         swap_depth(root->left, tree_depth+1, target_depth);
-    else
-        cout<<"unexpected depth";
     if (root->right != NULL)
         swap_depth(root->right, tree_depth+1, target_depth);
-    else
-        cout<<"unexpected depth";
 }
 
 void swap_tree(node *root, int k, int depth){
     for (int i=1;i <= depth;i++){
         if (i*k <= depth)
-            swap_depth(root, i*k, depth);
+            swap_depth(root, 1,i*k);
         else
             break;
     }
@@ -130,6 +126,7 @@ int main(){
         cin>>k;
         swap_tree(root, k, depth);
         inorder(root);
+        cout<<endl;
     }
 
     return 0;
