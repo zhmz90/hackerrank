@@ -1,0 +1,6 @@
+[package]
+name = "test_newproject"
+version = "0.1.0"
+authors = ["guolanting <guolanting@haplox.com>"]
+
+[dependencies]

@@ -1,0 +1,6 @@
+[package]
+name = "guuessing_game"
+version = "0.1.0"
+authors = ["guolanting <guolanting@haplox.com>"]
+
+[dependencies]
